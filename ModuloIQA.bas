@@ -1,5 +1,3 @@
-Attribute VB_Name = "ModuloIQA"
-
 Function Log10(Number As Double) As Double
     ' Verifica se o número é maior que zero
     If Number > 0 Then
@@ -8,7 +6,6 @@ Function Log10(Number As Double) As Double
         Log10 = CVErr(xlErrNum) ' Retorna erro se o número for menor ou igual a zero
     End If
 End Function
-
 
 Function IQA(rng As Range) As Variant
     Dim Resultados(8) As Double
@@ -203,6 +200,21 @@ Function ClassificaIQA(IQA As Double) As String
     End Select
 End Function
 
- 
 
-
+Sub TestarIQA()
+    ' Declare um intervalo com valores de exemplo
+    Dim rng As Range
+    Dim resultado As Variant
+    
+    ' Defina o intervalo de teste (C2:L2)
+    Set rng = ThisWorkbook.Sheets("Planilha1").Range("B2:L2")
+    
+    ' Chame a função IQA e armazene o resultado
+    resultado = IQA(rng)
+    
+    ' Imprima o resultado no console
+    Debug.Print "Resultado do IQA: "; resultado
+    
+    ' Mostra uma caixa de mensagem com o resultado
+    MsgBox "Resultado do IQA: " & resultado
+End Sub
