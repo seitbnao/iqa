@@ -1,5 +1,15 @@
 Attribute VB_Name = "ModuloIQA"
 
+Function Log10(Number As Double) As Double
+    ' Verifica se o nÃºmero Ã© maior que zero
+    If Number > 0 Then
+        Log10 = Log(Number) / Log(10)
+    Else
+        Log10 = CVErr(xlErrNum) ' Retorna erro se o nÃºmero for menor ou igual a zero
+    End If
+End Function
+
+
 Function IQA(rng As Range) As Variant
     Dim Resultados(8) As Double
     Dim pesos_w(8) As Double
@@ -24,16 +34,16 @@ Function IQA(rng As Range) As Variant
         Fosfato = Fosfato * 3.066
     End If
 
-    ' Garantir que a Altitude não seja zero
+    ' Garantir que a Altitude nÃ£o seja zero
     If Altitude = 0 Then
         Altitude = 1
     End If
 
-    ' Oxigênio Dissolvido
+    ' OxigÃªnio Dissolvido
     ConcentracaoSaturacao = (14.62 - 0.3898 * Temperatura + 0.006969 * Temperatura ^ 2 - 0.00005896 * Temperatura ^ 3) * (1 - 0.0000228675 * Altitude) ^ 5.167
     perc_Saturacao = 100 * Oxigenio / ConcentracaoSaturacao
 
-' Cálculo para Oxigênio Dissolvido
+' CÃ¡lculo para OxigÃªnio Dissolvido
 If perc_Saturacao > 0 And perc_Saturacao <= 50 Then
     Resultados(0) = 3 + 0.34 * perc_Saturacao + 0.008095 * perc_Saturacao ^ 2 + 1.35252 * 0.00001 * perc_Saturacao ^ 3
 ElseIf perc_Saturacao > 50 And perc_Saturacao <= 85 Then
@@ -59,7 +69,7 @@ If Coliformes > 0 Then
         Resultados(1) = 3
     End If
 Else
-    Resultados(1) = 3 ' Valor padrão
+    Resultados(1) = 3 ' Valor padrÃ£o
 End If
 pesos_w(1) = Resultados(1) ^ 0.15 ' Mantido como estava
 
@@ -102,12 +112,12 @@ If DBO > 0 Then
         Resultados(3) = 2 ' Para valores acima de 30
     End If
 Else
-    Resultados(3) = 2 ' Valor padrão
+    Resultados(3) = 2 ' Valor padrÃ£o
 End If
 pesos_w(3) = Resultados(3) ^ 0.1 ' Mantido como estava
 
 
-' Nitrogênio Total
+' NitrogÃªnio Total
 If Nitrato > 0 Then
     If Nitrato <= 10 Then
         Resultados(4) = 100 - 8.169 * Nitrato + 0.3059 * Nitrato ^ 2
@@ -119,7 +129,7 @@ If Nitrato > 0 Then
         Resultados(4) = 1 ' Para valores acima de 100
     End If
 Else
-    Resultados(4) = 1 ' Valor padrão
+    Resultados(4) = 1 ' Valor padrÃ£o
 End If
 pesos_w(4) = Resultados(4) ^ 0.1 ' Mantido como estava
 
@@ -127,7 +137,7 @@ pesos_w(4) = Resultados(4) ^ 0.1 ' Mantido como estava
 ' Fosfatos
 If Fosfato > 0 Then
     If Fosfato <= 1 Then
-        Resultados(5) = 99 * Exp(-0.91629 * Fosfato) ' Alterado para corresponder à lógica do JS
+        Resultados(5) = 99 * Exp(-0.91629 * Fosfato) ' Alterado para corresponder Ã  lÃ³gica do JS
     ElseIf Fosfato <= 5 Then
         Resultados(5) = 57.6 - 20.178 * Fosfato + 2.1326 * Fosfato ^ 2 ' Ajustado para a faixa de 1 a 5
     ElseIf Fosfato <= 10 Then
@@ -136,7 +146,7 @@ If Fosfato > 0 Then
         Resultados(5) = 5#  ' Para valores acima de 10
     End If
 Else
-    Resultados(5) = 4 ' Valor padrão
+    Resultados(5) = 4 ' Valor padrÃ£o
 End If
 pesos_w(5) = Resultados(5) ^ 0.1 ' Mantido como estava
 
@@ -147,19 +157,19 @@ pesos_w(5) = Resultados(5) ^ 0.1 ' Mantido como estava
 ' Turbidez
 If Turbidez > 0 Then
     If Turbidez <= 25 Then ' Alterado para 25
-        Resultados(7) = 100.17 - 2.67 * Turbidez + 0.03775 * Turbidez ^ 2 ' Ajuste feito para coincidir com a lógica do JS
+        Resultados(7) = 100.17 - 2.67 * Turbidez + 0.03775 * Turbidez ^ 2 ' Ajuste feito para coincidir com a lÃ³gica do JS
     ElseIf Turbidez <= 100 Then ' Alterado para 100
-        Resultados(7) = 84.76 * Exp(-0.016206 * Turbidez) ' Função exponencial em VB
+        Resultados(7) = 84.76 * Exp(-0.016206 * Turbidez) ' FunÃ§Ã£o exponencial em VB
     Else
         Resultados(7) = 5 ' Para valores acima de 100
     End If
 Else
-    Resultados(7) = 2 ' Valor padrão
+    Resultados(7) = 2 ' Valor padrÃ£o
 End If
 pesos_w(7) = Resultados(7) ^ 0.08 ' Mantido como estava
 
 
-' Sólidos Totais
+' SÃ³lidos Totais
 If SolidosTotais > 0 Then
     If SolidosTotais <= 150 Then
         Resultados(8) = 79.75 + 0.166 * SolidosTotais - 0.001088 * SolidosTotais ^ 2
@@ -179,7 +189,7 @@ End Function
 Function ClassificaIQA(IQA As Double) As String
     Select Case IQA
         Case Is > 79
-            ClassificaIQA = "ÓTIMA"
+            ClassificaIQA = "Ã“TIMA"
         Case 51 To 79
             ClassificaIQA = "BOA"
         Case 36 To 51
@@ -187,7 +197,7 @@ Function ClassificaIQA(IQA As Double) As String
         Case 19 To 36
             ClassificaIQA = "RUIM"
         Case Is <= 19
-            ClassificaIQA = "PÉSSIMA"
+            ClassificaIQA = "PÃ‰SSIMA"
         Case Else
             ClassificaIQA = "INDEFINIDA"
     End Select
